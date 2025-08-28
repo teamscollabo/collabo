@@ -7,19 +7,52 @@ import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS, type Language } from "../constants/constants";
 import Output from "./Output";
 
+// Yjs + WebRTC imports
+import * as Y from "yjs";
+import { WebrtcProvider } from "y-webrtc";
+
 const CodeEditor: React.FC = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const [value, setValue] = useState<string>("");
   const [language, setLanguage] = useState<Language>("javascript");
 
-  const onMount: OnMount = (editor) => {
+  // Keep doc/provider around for snippets + access
+  const ydocRef = useRef<Y.Doc | null>(null);
+  const providerRef = useRef<WebrtcProvider | null>(null);
+
+  const onMount: OnMount = async (editor) => {
     editorRef.current = editor;
     editor.focus();
+
+    // Dynamically import y-monaco to avoid SSR issues
+    const { MonacoBinding } = await import("y-monaco");
+
+    // Initialize Yjs + WebRTC only once
+    if (!ydocRef.current) {
+      const doc = new Y.Doc();
+      const provider = new WebrtcProvider("my-collab-room", doc);
+      const yText = doc.getText("monaco");
+
+      new MonacoBinding(
+        yText,
+        editor.getModel()!,
+        new Set([editor]),
+        provider.awareness
+      );
+
+      ydocRef.current = doc;
+      providerRef.current = provider;
+    }
   };
 
   const onSelect = (lang: Language) => {
     setLanguage(lang);
-    setValue(CODE_SNIPPETS[lang]);
+
+    // Update shared Yjs text instead of React state
+    const yText = ydocRef.current?.getText("monaco");
+    if (yText) {
+      yText.delete(0, yText.length); // clear
+      yText.insert(0, CODE_SNIPPETS[lang]); // insert snippet
+    }
   };
 
   return (
@@ -32,10 +65,8 @@ const CodeEditor: React.FC = () => {
           height="75vh"
           theme="vs-dark"
           language={language}
-          defaultValue={CODE_SNIPPETS[language]}
+          defaultValue={CODE_SNIPPETS[language]} // initial seed
           onMount={onMount}
-          value={value}
-          onChange={(val) => setValue(val ?? "")}
         />
       </div>
 
