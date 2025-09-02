@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useRef, useState } from "react";
 import { Editor, OnMount } from "@monaco-editor/react";
@@ -11,7 +11,11 @@ import Output from "./Output";
 import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 
-const CodeEditor: React.FC = () => {
+interface CodeEditorProps {
+  roomId?: string; // pass from parent (landing or /[roomId])
+}
+
+const CodeEditor: React.FC<CodeEditorProps> = ({ roomId = "landing" }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [language, setLanguage] = useState<Language>("javascript");
 
@@ -29,7 +33,7 @@ const CodeEditor: React.FC = () => {
     // Initialize Yjs + WebRTC only once
     if (!ydocRef.current) {
       const doc = new Y.Doc();
-      const provider = new WebrtcProvider("my-collab-room", doc);
+      const provider = new WebrtcProvider(roomId, doc); // 🔑 use roomId
       const yText = doc.getText("monaco");
 
       new MonacoBinding(
@@ -50,8 +54,8 @@ const CodeEditor: React.FC = () => {
     // Update shared Yjs text instead of React state
     const yText = ydocRef.current?.getText("monaco");
     if (yText) {
-      yText.delete(0, yText.length); // clear
-      yText.insert(0, CODE_SNIPPETS[lang]); // insert snippet
+      yText.delete(0, yText.length);
+      yText.insert(0, CODE_SNIPPETS[lang]);
     }
   };
 
@@ -65,7 +69,7 @@ const CodeEditor: React.FC = () => {
           height="75vh"
           theme="vs-dark"
           language={language}
-          defaultValue={CODE_SNIPPETS[language]} // initial seed
+          defaultValue={CODE_SNIPPETS[language]}
           onMount={onMount}
         />
       </div>
