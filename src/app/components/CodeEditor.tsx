@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Editor, OnMount } from "@monaco-editor/react";
 import type * as monaco from "monaco-editor";
 import { CODE_SNIPPETS, type Language } from "../constants/constants";
@@ -11,8 +11,8 @@ import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 
 interface CodeEditorProps {
-  roomId: string;      // required now
-  language: Language;  // required now
+  roomId: string;
+  language: Language;
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
@@ -24,19 +24,30 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
     editorRef.current = editor;
     editor.focus();
 
-    // Dynamically import y-monaco to avoid SSR issues
     const { MonacoBinding } = await import("y-monaco");
 
     if (!ydocRef.current) {
       const doc = new Y.Doc();
-      const provider = new WebrtcProvider(roomId, doc);
-      const yText = doc.getText("monaco");
+      const provider = new WebrtcProvider(roomId, doc, {
+        signaling: ["ws://localhost:4444"], // use your signaling server
+      });
 
-      // Initialize shared text with snippet if empty
-      if (yText.length === 0) {
+      const yText = doc.getText("monaco");
+      const yMeta = doc.getMap("meta"); // shared metadata map
+
+      // Insert snippet only if the room hasn't been initialized
+      if (!yMeta.get("initialized") && yText.length === 0) {
+        console.log("Inserting snippet for the first time (creator only)");
         yText.insert(0, CODE_SNIPPETS[language]);
+        yMeta.set("initialized", true);
       }
 
+      // Optional: log when synced with other peers
+      provider.on("synced", (isSynced) => {
+        console.log("synced event fired! isSynced =", isSynced, "yText length:", yText.length);
+      });
+
+      // Bind Yjs text to Monaco editor
       new MonacoBinding(
         yText,
         editor.getModel()!,
@@ -57,7 +68,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
           height="75vh"
           theme="vs-dark"
           language={language}
-          defaultValue={CODE_SNIPPETS[language]} // initial template
           onMount={onMount}
         />
       </div>
