@@ -18,7 +18,7 @@ export default function HomePage() {
 
   const createRoom = (lang: Language) => {
     const roomId = uuidv4();
-    router.push(`/${lang}/${roomId}?init=1`); // only creator seeds snippet
+    router.push(`/${lang}/${roomId}`);
   };
 
   return (
