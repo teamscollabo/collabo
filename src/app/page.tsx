@@ -23,22 +23,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0f0a19] text-gray-200">
-      {/* Top nav */}
-      <header className="sticky top-0 z-10 backdrop-blur bg-[#0f0a19]/70 border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600" />
-            <span className="text-lg font-bold tracking-tight">Collab IDE</span>
-          </div>
-          <a
-            href="https://github.com"
-            target="_blank"
-            className="text-sm text-gray-400 hover:text-gray-200 transition"
-          >
-            GitHub
-          </a>
-        </div>
-      </header>
 
       {/* Hero */}
       <main className="max-w-6xl mx-auto px-6 py-12">
@@ -62,7 +46,7 @@ export default function HomePage() {
                 <button
                   key={lang}
                   onClick={() => createRoom(lang)}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#151026] p-5 text-left transition hover:shadow-xl hover:border-white/20"
+                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#151026] p-5 text-left transition hover:shadow-xl hover:border-white/20 cursor-pointer"
                 >
                   <div
                     className={`pointer-events-none absolute -top-8 -right-8 h-24 w-24 rounded-full bg-gradient-to-br ${gradient} opacity-30 blur-2xl transition group-hover:opacity-50`}
@@ -99,9 +83,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        <footer className="mt-14 text-center text-xs text-gray-500">
-          Built with Next.js, Monaco, Yjs, and WebRTC.
-        </footer>
       </main>
     </div>
   );
