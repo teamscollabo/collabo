@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type * as monaco from "monaco-editor";
 import { executeCode, type ExecuteCodeResponse } from "../api";
+import { Card } from "@/components/ui/card"
 import type { Language } from "../constants/constants";
 
 interface OutputProps {
@@ -32,16 +33,16 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
   };
 
   return (
-    <div className="w-1/2">
-      <h2 className="mb-2 text-lg">Output</h2>
-
-      <button
-        onClick={runCode}
-        disabled={isLoading}
-        className="mb-4 px-4 py-2 border border-green-500 rounded text-green-500 hover:bg-green-500 hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isLoading ? "Running..." : "Run Code"}
-      </button>
+    <div className="flex flex-col h-full">
+      <div className="mb-4 mx-4">
+        <button
+          onClick={runCode}
+          disabled={isLoading}
+          className="w-full px-4 py-2 border border-green-500 rounded text-green-500 hover:bg-green-500 hover:text-black cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? "Running..." : "Run Code"}
+        </button>
+      </div>
 
       <div
         className={`h-[75vh] p-2 border rounded overflow-auto ${

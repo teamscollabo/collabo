@@ -20,7 +20,9 @@ export default async function RoomPage({ params }: RoomPageProps) {
 
   return (
     <div className="min-h-screen bg-[#0f0a19] text-gray-400 px-6 py-8">
-      <InviteButton/>
+      <div className="flex items-center pb-4">
+        <InviteButton/>
+      </div>
       <CodeEditor roomId={roomId} language={language as Language} />
     </div>
   );

@@ -5,10 +5,12 @@ import { Editor, OnMount } from "@monaco-editor/react";
 import type * as monaco from "monaco-editor";
 import { CODE_SNIPPETS, type Language } from "../constants/constants";
 import Output from "./Output";
+import {ResizableHandle,ResizablePanel,ResizablePanelGroup,} from "@/components/ui/resizable"
 
 // Yjs + WebRTC imports
 import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
+
 
 interface CodeEditorProps {
   roomId: string;
@@ -88,18 +90,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
   };
 
   return (
-    <div className="flex gap-4">
-      <div className="w-1/2">
+     <ResizablePanelGroup direction="horizontal" className="h-[75vh]">
+      <ResizablePanel defaultSize={50} minSize={20}>
         <Editor
           options={{ minimap: { enabled: false } }}
-          height="75vh"
+          height="100%"
           theme="vs-dark"
           language={language}
           onMount={onMount}
         />
-      </div>
-      <Output editorRef={editorRef} language={language} />
-    </div>
+      </ResizablePanel>
+
+      <ResizableHandle withHandle />
+
+      <ResizablePanel defaultSize={50} minSize={20}>
+        <Output editorRef={editorRef} language={language} />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
 
