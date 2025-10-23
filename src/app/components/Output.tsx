@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type * as monaco from "monaco-editor";
 import { executeCode, type ExecuteCodeResponse } from "../api";
-import { Card } from "@/components/ui/card"
 import type { Language } from "../constants/constants";
 
 interface OutputProps {
@@ -23,8 +22,12 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
       const result: ExecuteCodeResponse = await executeCode({ language, sourceCode });
       setOutput(result.run);
       setIsError(!!result.run.stderr);
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(error);
+      }
       setIsError(true);
       setOutput(null);
     } finally {
@@ -56,7 +59,7 @@ const Output: React.FC<OutputProps> = ({ editorRef, language }) => {
             {output.output && <pre className="mb-2">Output: {output.output}</pre>}
           </>
         ) : (
-          <p>Click "Run Code" to see the output here</p>
+          <p>Click &quot;Run Code&quot; to see the output here</p>
         )}
       </div>
     </div>
