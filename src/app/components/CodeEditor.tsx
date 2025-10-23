@@ -26,7 +26,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
     // 1. Initialize Yjs Doc and Provider
     const doc = new Y.Doc();
     const provider = new WebrtcProvider(roomId, doc, {
-    signaling: ['ws://localhost:8787'] // Use ws:// for local testing
+    signaling: ['wss://signaling-server-afah.onrender.com/ws']
 });
 
     ydocRef.current = doc;
