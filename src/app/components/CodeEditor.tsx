@@ -39,25 +39,25 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ roomId, language }) => {
 
     // 2. Check and coordinate snippet insertion
     // Listen for changes in other users' awareness state
-    awareness.on("change", () => {
-      const awarenessStates = Array.from(awareness.getStates().values());
-      const isSomeoneInserting = awarenessStates.some(
-        (state) => state.status === "inserting-snippet"
-      );
+    // awareness.on("change", () => {
+    //   const awarenessStates = Array.from(awareness.getStates().values());
+    //   const isSomeoneInserting = awarenessStates.some(
+    //     (state) => state.status === "inserting-snippet"
+    //   );
 
-      // If the editor is empty and no one else is inserting, this client can be the one to do it
-      if (yText.length === 0 && !yMeta.get("initialized") && !isSomeoneInserting) {
-        // Set awareness state to indicate that this client is inserting the snippet
-        awareness.setLocalStateField("status", "inserting-snippet");
+    //   // If the editor is empty and no one else is inserting, this client can be the one to do it
+    //   if (yText.length === 0 && !yMeta.get("initialized") && !isSomeoneInserting) {
+    //     // Set awareness state to indicate that this client is inserting the snippet
+    //     awareness.setLocalStateField("status", "inserting-snippet");
 
-        // Perform the insertion
-        yText.insert(0, CODE_SNIPPETS[language]);
-        yMeta.set("initialized", true);
+    //     // Perform the insertion
+    //     yText.insert(0, CODE_SNIPPETS[language]);
+    //     yMeta.set("initialized", true);
 
-        // Clear awareness status after insertion
-        awareness.setLocalStateField("status", null);
-      }
-    });
+    //     // Clear awareness status after insertion
+    //     awareness.setLocalStateField("status", null);
+    //   }
+    // });
 
     // 3. Cleanup function
     return () => {
