@@ -8,8 +8,8 @@ const geistSans = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "Piston Playground",
-  description: "Next.js + Monaco + Piston demo",
+  title: "Collabo Editor",
+  description: "a real-time collaborative code editor using Monaco Editor and Yjs (CRDT) to synchronize live edits between multiple users with conflict-free consistency",
 };
 
 export default function RootLayout({
