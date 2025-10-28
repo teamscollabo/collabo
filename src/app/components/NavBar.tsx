@@ -20,9 +20,9 @@ export default function NavBar() {
         </Link>
 
         <div className="flex w-full max-w-lg justify-between">
-          <NavLink href="/ourTeam">Our Team</NavLink>
-          <NavLink href="/aboutUs">About Us</NavLink>
-          <NavLink href="https://github.com">Github</NavLink>
+          {/* <NavLink href="/ourTeam">Our Team</NavLink> */}
+          {/* <NavLink href="/aboutUs">About Us</NavLink>
+          <NavLink href="https://github.com">Github</NavLink> */}
         </div>
 
       </div>
